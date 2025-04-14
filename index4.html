@@ -5,29 +5,33 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-three.prod.js"></script>
   </head>
   <body>
-    <div id="ar-container"></div>
+    <div id="ar-container" style="width: 100vw; height: 100vh;"></div>
 
     <script type="module">
       import {loadGLTF} from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/three/loaders.js';
 
-      const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-        container: document.querySelector("#ar-container"),
-        imageTargetSrc: "https://cdn.glitch.global/02047457-bcf8-4e01-993f-b7c11ad53475/targets%20(2).mind?v=1744586530755",
-      });
+      const startAR = async () => {
+        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+          container: document.querySelector("#ar-container"),
+          imageTargetSrc: "https://cdn.glitch.global/02047457-bcf8-4e01-993f-b7c11ad53475/targets%20(2).mind?v=1744586530755",
+        });
 
-      const {renderer, scene, camera} = mindarThree;
+        const {renderer, scene, camera} = mindarThree;
+        const anchor = mindarThree.addAnchor(0);
 
-      const anchor = mindarThree.addAnchor(0);
+        //モデルのURLをCDNなどにアップしてある「完全なURL」で指定
+        const gltf = await loadGLTF("https://cdn.glitch.global/02047457-bcf8-4e01-993f-b7c11ad53475/Remilia_S.glb?v=1744586599999");
 
-      const gltf = await loadGLTF("images/3dm/Remilia_S.glth.glb"); // ← ここに変換済みglbを入れる
-      gltf.scene.scale.set(0.5, 0.5, 0.5);
-      anchor.group.add(gltf.scene);
+        gltf.scene.scale.set(0.2, 0.2, 0.2);
+        anchor.group.add(gltf.scene);
 
-      await mindarThree.start();
-      renderer.setAnimationLoop(() => {
-        renderer.render(scene, camera);
-      });
+        await mindarThree.start();
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
+      };
+
+      startAR(); // 呼び出し
     </script>
   </body>
 </html>
-<!--model：https://bowlroll.net/file/251360-->
