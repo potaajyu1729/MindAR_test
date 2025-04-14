@@ -1,20 +1,32 @@
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-three.prod.js"></script>
   </head>
   <body>
-    <a-scene
-      mindar-image="imageTargetSrc:  https://cdn.glitch.global/02047457-bcf8-4e01-993f-b7c11ad53475/targets%20(2).mind?v=1744586530755;"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"  
-    >
-      <a-camera position="0 0.5 0" look-controls="enabled: false"></a-camera>
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-gltf-model mindar-face-occluder position="0 0 0"rotation="0 0 0" scale="0.065 0.065 0.065" src="images/3d_text/3d_text.mtl"></a-gltf-model>
-      </a-entity>
-    </a-scene>
+    <div id="ar-container"></div>
+
+    <script type="module">
+      import {loadGLTF} from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/three/loaders.js';
+
+      const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+        container: document.querySelector("#ar-container"),
+        imageTargetSrc: "https://cdn.glitch.global/02047457-bcf8-4e01-993f-b7c11ad53475/targets%20(2).mind?v=1744586530755",
+      });
+
+      const {renderer, scene, camera} = mindarThree;
+
+      const anchor = mindarThree.addAnchor(0);
+
+      const gltf = await loadGLTF("images/3dm/Remilia_S.glth.glb"); // ← ここに変換済みglbを入れる
+      gltf.scene.scale.set(0.5, 0.5, 0.5);
+      anchor.group.add(gltf.scene);
+
+      await mindarThree.start();
+      renderer.setAnimationLoop(() => {
+        renderer.render(scene, camera);
+      });
+    </script>
   </body>
 </html>
 <!--model：https://bowlroll.net/file/251360-->
