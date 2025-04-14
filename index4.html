@@ -1,37 +1,34 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-three.prod.js"></script>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   </head>
   <body>
-    <div id="ar-container" style="width: 100vw; height: 100vh;"></div>
+    <a-scene
+      mindar-image="imageTargetSrc: https://cdn.glitch.global/02047457-bcf8-4e01-993f-b7c11ad53475/targets%20(2).mind?v=1744586530755"
+      color-space="sRGB"
+      embedded
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      renderer="colorManagement: true, physicallyCorrectLights"
+    >
+      <a-assets>
+        <!--ここで3Dモデルを読み込む -->
+        <a-asset-item id="remiliaModel" src="images/3dm/Remilia_S.glth.glb"></a-asset-item>
+      </a-assets>
 
-    <script type="module">
-      import {loadGLTF} from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/three/loaders.js';
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      const startAR = async () => {
-        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-          container: document.querySelector("#ar-container"),
-          imageTargetSrc: "https://cdn.glitch.global/02047457-bcf8-4e01-993f-b7c11ad53475/targets%20(2).mind?v=1744586530755",
-        });
-
-        const {renderer, scene, camera} = mindarThree;
-        const anchor = mindarThree.addAnchor(0);
-
-        //モデルのURLをCDNなどにアップしてある「完全なURL」で指定
-        const gltf = await loadGLTF("https://cdn.glitch.global/02047457-bcf8-4e01-993f-b7c11ad53475/Remilia_S.glb?v=1744586599999");
-
-        gltf.scene.scale.set(0.2, 0.2, 0.2);
-        anchor.group.add(gltf.scene);
-
-        await mindarThree.start();
-        renderer.setAnimationLoop(() => {
-          renderer.render(scene, camera);
-        });
-      };
-
-      startAR(); // 呼び出し
-    </script>
+      <!--マーカーが見つかったときに表示されるエンティティ -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-gltf-model
+          src="#remiliaModel"
+          position="0 0 0"
+          rotation="0 180 0"
+          scale="0.2 0.2 0.2"
+        ></a-gltf-model>
+      </a-entity>
+    </a-scene>
   </body>
 </html>
